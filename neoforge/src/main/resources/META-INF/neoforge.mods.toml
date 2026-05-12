@@ -1,0 +1,36 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "tiertagger"
+displayName = "TierTagger"
+version = "${version}"
+
+logoFile = "assets/tiertagger/icon.png"
+authors = "uku, netiyiy (original creator)"
+description = "Display player's PvP Tiers in their nametag!"
+
+[[dependencies.tiertagger]]
+modId = "minecraft"
+type = "required"
+versionRange = "[26.1,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.tiertagger]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.1.0.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.tiertagger]]
+modId = "ukulib"
+type = "required"
+versionRange = "[2.0.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[mixins]]
+config = "TierTagger.mixins.json"

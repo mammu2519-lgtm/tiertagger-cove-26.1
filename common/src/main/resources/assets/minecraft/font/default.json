@@ -1,0 +1,60 @@
+{
+  "providers": [
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/axe.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE701"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/mace.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE702"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/nethop.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE703"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/pot.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE704"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/smp.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE705"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/sword.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE706"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/uhc.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE707"]
+    },
+    {
+      "type": "bitmap",
+      "file": "tiertagger:covetiers/vanilla.png",
+      "ascent": 8,
+      "height": 8,
+      "chars": ["\uE708"]
+    }
+  ]
+}
