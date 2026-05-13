@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 public class TierCache {
     private static final List<GameMode> GAMEMODES = new ArrayList<>();
     private static final Map<UUID, Optional<Map<String, PlayerInfo.Ranking>>> TIERS = new ConcurrentHashMap<>();
+    private static final Map<String, Optional<Map<String, PlayerInfo.Ranking>>> TIERS_BY_NAME = new ConcurrentHashMap<>();
 
     public static void init() {
         try {
@@ -39,20 +40,42 @@ public class TierCache {
         });
     }
 
+    public static Optional<Map<String, PlayerInfo.Ranking>> getPlayerRankings(String name, UUID fallbackUuid) {
+        String cacheKey = normalizeName(name);
+        if (cacheKey.isEmpty()) {
+            return getPlayerRankings(fallbackUuid);
+        }
+
+        return TIERS_BY_NAME.computeIfAbsent(cacheKey, _ -> {
+            PlayerInfo.search(TierTagger.getClient(), name).thenAccept(info -> {
+                if (info == null || info.uuid() == null) {
+                    return;
+                }
+
+                cacheProfile(info, fallbackUuid);
+            }).exceptionally(t -> {
+                TierTagger.getLogger().warn("Error getting player rankings by name ({})", name, t);
+                return null;
+            });
+
+            return Optional.empty();
+        });
+    }
+
     public static CompletableFuture<PlayerInfo> searchPlayer(String query) {
         return PlayerInfo.search(TierTagger.getClient(), query).thenApply(p -> {
             if (p == null || p.uuid() == null) {
                 throw new NoSuchElementException("No CoveTiers profile found for " + query);
             }
 
-            UUID uuid = parseUUID(p.uuid());
-            TIERS.put(uuid, Optional.of(p.rankings()));
+            cacheProfile(p, null);
             return p;
         });
     }
 
     public static void clearCache() {
         TIERS.clear();
+        TIERS_BY_NAME.clear();
     }
 
     public static GameMode findNextMode(GameMode current) {
@@ -80,6 +103,28 @@ public class TierCache {
             long leastSignificant = Long.parseUnsignedLong(uuid.substring(16), 16);
             return new UUID(mostSignificant, leastSignificant);
         }
+    }
+
+    private static void cacheProfile(PlayerInfo info, UUID fallbackUuid) {
+        Optional<Map<String, PlayerInfo.Ranking>> rankings = Optional.of(info.rankings());
+        TIERS_BY_NAME.put(normalizeName(info.name()), rankings);
+
+        try {
+            TIERS.put(parseUUID(info.uuid()), rankings);
+            if (fallbackUuid != null) {
+                TIERS.put(fallbackUuid, rankings);
+            }
+        } catch (Exception e) {
+            if (fallbackUuid != null) {
+                TIERS.put(fallbackUuid, rankings);
+            } else {
+                TierTagger.getLogger().warn("Could not parse CoveTiers UUID for {}", info.name(), e);
+            }
+        }
+    }
+
+    private static String normalizeName(String name) {
+        return name == null ? "" : name.trim().toLowerCase(Locale.ROOT);
     }
 
     private TierCache() {

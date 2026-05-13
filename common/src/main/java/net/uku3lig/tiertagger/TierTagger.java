@@ -55,7 +55,11 @@ public class TierTagger {
     }
 
     public static Component appendTier(UUID uuid, Component text) {
-        MutableComponent following = getPlayerTier(uuid)
+        return appendTier(null, uuid, text);
+    }
+
+    public static Component appendTier(String name, UUID uuid, Component text) {
+        MutableComponent following = getPlayerTier(name, uuid)
                 .map(entry -> {
                     Component tierText = getRankingText(entry.ranking(), false);
 
@@ -76,9 +80,13 @@ public class TierTagger {
     }
 
     public static Optional<PlayerInfo.NamedRanking> getPlayerTier(UUID uuid) {
+        return getPlayerTier(null, uuid);
+    }
+
+    public static Optional<PlayerInfo.NamedRanking> getPlayerTier(String name, UUID uuid) {
         GameMode mode = manager.getConfig().getGameMode();
 
-        return TierCache.getPlayerRankings(uuid)
+        return TierCache.getPlayerRankings(name, uuid)
                 .map(rankings -> {
                     PlayerInfo.Ranking ranking = rankings.get(mode.id());
                     Optional<PlayerInfo.NamedRanking> highest = PlayerInfo.getHighestRanking(rankings);

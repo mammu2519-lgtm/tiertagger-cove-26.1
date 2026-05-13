@@ -13,7 +13,7 @@ public class MixinPlayer {
     public Component prependTier(Component original) {
         if (TierTagger.getManager().getConfig().isEnabled()) {
             Player self = (Player) (Object) this;
-            return TierTagger.appendTier(self.getUUID(), original);
+            return TierTagger.appendTier(self.getScoreboardName(), self.getUUID(), original);
         } else {
             return original;
         }
